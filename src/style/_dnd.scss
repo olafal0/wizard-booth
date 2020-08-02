@@ -1,0 +1,16 @@
+@use 'variables';
+
+.stat-block {
+  display: flex;
+  .stat-item {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px;
+  border: 1px solid variables.$attn-primary;
+  border-radius: 5px;
+}
