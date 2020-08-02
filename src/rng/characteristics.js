@@ -11,7 +11,7 @@ export const appearance = [
   'Pronounced scar',
   'Missing teeth',
   'Missing fingers',
-  'Unusual eye color(or two different colors)',
+  'Unusual eye color (or two different colors)',
   'Tattoos',
   'Birthmark',
   'Unusual skin color',
@@ -20,7 +20,7 @@ export const appearance = [
   'Unusual hair color',
   'Nervous eye twitch',
   'Distinctive nose',
-  'Distinctive posture(crooked or rigid)',
+  'Distinctive posture (crooked or rigid)',
   'Exceptionally beautiful',
   'Exceptionally ugly ',
 ];

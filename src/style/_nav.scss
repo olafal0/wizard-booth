@@ -1,6 +1,7 @@
 @use 'variables';
 
 nav {
+  font-family: variables.$title-font;
   display: flex;
   flex-wrap: wrap;
   align-items: center;

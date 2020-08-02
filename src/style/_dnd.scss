@@ -2,9 +2,11 @@
 
 .stat-block {
   display: flex;
+  font-family: variables.$title-font;
   .stat-item {
     flex: 1;
     text-align: center;
+    min-width: 2.5em;
   }
 }
 
