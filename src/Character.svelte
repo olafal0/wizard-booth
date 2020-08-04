@@ -3,11 +3,28 @@
 
   export let npc;
 
-  export let expanded = true;
+  export let expanded = false;
 
   function saveChange(event) {
     console.log(`Saving ${event.detail.key} = ${event.detail.content}`);
   }
+
+  // Create a proxy object for avoiding all the pitfalls of classes, bindings,
+  // and Svelte reactivity
+  // Any random() method will call the relevant method on npc and assign it
+  // to itself, which will trigger Svelte's reactive updates, and avoid needing
+  // to do any bind() trickery.
+  const npcProxy = new Proxy(
+    {},
+    {
+      get: function(target, prop) {
+        return () => {
+          npc[prop]();
+          npc = npc;
+        };
+      }
+    }
+  );
 </script>
 
 <div
@@ -23,47 +40,94 @@
       }}>
       Collapse
     </div>
-    <h3>{npc.name}</h3>
+    <h3>
+      <button
+        class="material-icons borderless small"
+        on:click={npcProxy.randomName}>
+        refresh
+      </button>
+      <Editable bind:content={npc.name} />
+    </h3>
     <div>
-      <Editable on:updated={saveChange} bind:content={npc.appearance} />
+      <button
+        class="material-icons borderless small"
+        on:click={npcProxy.randomAppearance}>
+        refresh
+      </button>
+      <Editable bind:content={npc.appearance} />
     </div>
     <div>
-      <Editable on:updated={saveChange} bind:content={npc.lowAbility} />
+      <button
+        class="material-icons borderless small"
+        on:click={npcProxy.randomAbilities}>
+        refresh
+      </button>
+      <Editable bind:content={npc.lowAbility} />
       but
-      <Editable on:updated={saveChange} bind:content={npc.highAbility} />
+      <Editable bind:content={npc.highAbility} />
     </div>
     <div>
-      <Editable on:updated={saveChange} bind:content={npc.talent} />
+      <button
+        class="material-icons borderless small"
+        on:click={npcProxy.randomTalent}>
+        refresh
+      </button>
+      <Editable bind:content={npc.talent} />
     </div>
     <div>
-      <Editable on:updated={saveChange} bind:content={npc.mannerism} />
+      <button
+        class="material-icons borderless small"
+        on:click={npcProxy.randomMannerism}>
+        refresh
+      </button>
+      <Editable bind:content={npc.mannerism} />
     </div>
     <div>
-      <Editable on:updated={saveChange} bind:content={npc.interactionStyle} />
+      <button
+        class="material-icons borderless small"
+        on:click={npcProxy.randomInteractionStyle}>
+        refresh
+      </button>
+      <Editable bind:content={npc.interactionStyle} />
     </div>
     <div>
-      <Editable on:updated={saveChange} bind:content={npc.ideal} />
+      <button
+        class="material-icons borderless small"
+        on:click={npcProxy.randomIdeal}>
+        refresh
+      </button>
+      <Editable bind:content={npc.ideal} />
     </div>
     <div>
-      <Editable on:updated={saveChange} bind:content={npc.bond} />
+      <button
+        class="material-icons borderless small"
+        on:click={npcProxy.randomBond}>
+        refresh
+      </button>
+      <Editable bind:content={npc.bond} />
     </div>
     <div>
-      <Editable on:updated={saveChange} bind:content={npc.flaw} />
+      <button
+        class="material-icons borderless small"
+        on:click={npcProxy.randomFlaw}>
+        refresh
+      </button>
+      <Editable bind:content={npc.flaw} />
     </div>
-    {#if npc.tags}
-      <div>
-        {#each npc.tags as tag}
-          <div class="tag">{tag}</div>
-        {/each}
-      </div>
-    {/if}
+    <div>
+      Tags:
+      {#each npc.tags as tag}
+        <span class="tag">{tag}</span>
+      {/each}
+    </div>
     {#if npc.stats}
       <div class="stat-block">
         {#each Object.keys(npc.stats) as stat}
           <div class="stat-item">
             {stat.toUpperCase()}
             <br />
-            {npc.stats[stat]}
+            <Editable inputType="number" bind:content={npc.stats[stat]} />
+            <!-- {npc.stats[stat]} -->
           </div>
         {/each}
       </div>

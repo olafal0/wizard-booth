@@ -12,7 +12,6 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true,
     },
@@ -22,6 +21,7 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, './index.html'));
 
   mainWindow.maximize();
+  mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished

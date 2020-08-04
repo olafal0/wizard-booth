@@ -5,6 +5,7 @@
 
   export let content = "";
   export let key = "";
+  export let inputType = "text";
 
   let editing = false;
 
@@ -16,7 +17,6 @@
     if (event.key === "Escape") {
       editing = false;
     }
-    console.log(event.key);
   }
 
   function cancelEdit() {
@@ -24,14 +24,30 @@
   }
 </script>
 
+<style lang="scss">
+  input[type="number"] {
+    width: 40px;
+  }
+</style>
+
 {#if editing}
-  <!-- svelte-ignore a11y-autofocus -->
-  <input
-    type="text"
-    on:keydown={keypress}
-    on:blur={cancelEdit}
-    bind:value={content}
-    autofocus />
+  {#if inputType === 'text'}
+    <!-- svelte-ignore a11y-autofocus -->
+    <input
+      type="text"
+      on:keydown={keypress}
+      on:blur={cancelEdit}
+      bind:value={content}
+      autofocus />
+  {:else if inputType === 'number'}
+    <!-- svelte-ignore a11y-autofocus -->
+    <input
+      type="number"
+      on:keydown={keypress}
+      on:blur={cancelEdit}
+      bind:value={content}
+      autofocus />
+  {/if}
 {:else}
   <span
     on:click={() => {

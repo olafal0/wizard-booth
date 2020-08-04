@@ -15,7 +15,7 @@ export default class NPC {
   constructor(options = {}) {
     this.options = { ...defaultOptions, ...options };
     this.markov = new MarkovChain(nameSets[this.options.nameGenerationSet]);
-    this.tags = options.tags;
+    this.tags = this.options.tags;
     // Generate random characteristics to start with
     this.randomName();
     this.randomAppearance();
@@ -27,6 +27,22 @@ export default class NPC {
     this.randomBond();
     this.randomFlaw();
     this.randomStats();
+  }
+
+  static fromJSON(data) {
+    const npc = new NPC();
+    npc.name = data.name;
+    npc.appearance = data.appearance;
+    npc.highAbility = data.highAbility;
+    npc.lowAbility = data.lowAbility;
+    npc.talent = data.talent;
+    npc.mannerism = data.mannerism;
+    npc.interactionStyle = data.interactionStyle;
+    npc.ideal = data.ideal;
+    npc.bond = data.bond;
+    npc.flaw = data.flaw;
+    npc.tags = data.tags;
+    return npc;
   }
 
   toJSON() {
@@ -41,6 +57,7 @@ export default class NPC {
       ideal: this.ideal,
       bond: this.bond,
       flaw: this.flaw,
+      tags: this.tags,
     };
   }
 
