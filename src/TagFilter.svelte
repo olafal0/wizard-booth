@@ -15,7 +15,7 @@
 </script>
 
 <div
-  class="tag-filter"
+  class="tag-filter nav-push"
   tabindex="-1"
   on:click={() => {
     expanded = !expanded;

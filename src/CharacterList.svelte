@@ -35,8 +35,8 @@
 
 <nav>
   <h1>Wizard Booth</h1>
-  <button class="borderless" on:click={createNew}>New Character</button>
   <TagFilter bind:allTags bind:selectedTags />
+  <button class="borderless" on:click={createNew}>New Character</button>
 </nav>
 
 <div class="flex-container">

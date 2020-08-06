@@ -21,7 +21,6 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, './index.html'));
 
   mainWindow.maximize();
-  mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished

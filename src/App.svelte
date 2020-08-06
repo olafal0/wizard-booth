@@ -7,7 +7,7 @@
   const fs = require("fs");
 
   let browserWindow;
-  let characters;
+  let characters = [];
   let fileManager;
 
   onMount(() => {

@@ -20,7 +20,6 @@
 
 form {
   margin: 0;
-  padding: 20px;
 
   input[type='text'],
   input[type='password'],
@@ -28,9 +27,6 @@ form {
   textarea,
   ::placeholder {
     display: block;
-    margin: 10px 0px;
-    padding: 10px;
-    width: 100%;
     color: variables.$text-light;
     background-color: transparent;
     border: 1px solid variables.$attn-neutral;

@@ -137,6 +137,12 @@
         {/each}
       </div>
     {/if}
+    <div>
+      Notes:
+      <form>
+        <textarea rows="10" cols="40" bind:value={npc.notes} />
+      </form>
+    </div>
   {:else}
     <h3>{npc.name}</h3>
     <div>{npc.appearance}, {npc.highAbility}, {npc.lowAbility}</div>

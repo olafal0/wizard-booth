@@ -16,6 +16,7 @@ export default class NPC {
     this.options = { ...defaultOptions, ...options };
     this.markov = new MarkovChain(nameSets[this.options.nameGenerationSet]);
     this.tags = this.options.tags;
+    this.notes = '';
     // Generate random characteristics to start with
     this.randomName();
     this.randomAppearance();
@@ -42,6 +43,7 @@ export default class NPC {
     npc.bond = data.bond;
     npc.flaw = data.flaw;
     npc.tags = data.tags;
+    npc.notes = data.notes;
     return npc;
   }
 
@@ -58,6 +60,7 @@ export default class NPC {
       bond: this.bond,
       flaw: this.flaw,
       tags: this.tags,
+      notes: this.notes,
     };
   }
 
@@ -115,12 +118,12 @@ export default class NPC {
 
   randomStats() {
     this.stats = {
-      str: 7 + Math.floor(Math.random() * 6),
-      dex: 7 + Math.floor(Math.random() * 6),
-      con: 7 + Math.floor(Math.random() * 6),
-      int: 7 + Math.floor(Math.random() * 6),
-      wis: 7 + Math.floor(Math.random() * 6),
-      chr: 7 + Math.floor(Math.random() * 6),
+      str: 7 + Math.floor(Math.random() * 7),
+      dex: 7 + Math.floor(Math.random() * 7),
+      con: 7 + Math.floor(Math.random() * 7),
+      int: 7 + Math.floor(Math.random() * 7),
+      wis: 7 + Math.floor(Math.random() * 7),
+      chr: 7 + Math.floor(Math.random() * 7),
     };
   }
 }
