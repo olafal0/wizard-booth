@@ -1,12 +1,16 @@
 <script>
   import Editable from "./Editable";
+  import TagEditor from "./TagEditor";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   export let npc;
 
   export let expanded = false;
 
-  function saveChange(event) {
-    console.log(`Saving ${event.detail.key} = ${event.detail.content}`);
+  function deleteCharacter() {
+    dispatch("delete", npc);
   }
 
   // Create a proxy object for avoiding all the pitfalls of classes, bindings,
@@ -33,6 +37,9 @@
     expanded = true;
   }}>
   {#if expanded}
+    <div class="left small" on:click|stopPropagation={deleteCharacter}>
+      Delete
+    </div>
     <div
       class="right small"
       on:click|stopPropagation={() => {
@@ -116,9 +123,7 @@
     </div>
     <div>
       Tags:
-      {#each npc.tags as tag}
-        <span class="tag">{tag}</span>
-      {/each}
+      <TagEditor bind:tags={npc.tags} on:newTag on:removeTag />
     </div>
     {#if npc.stats}
       <div class="stat-block">

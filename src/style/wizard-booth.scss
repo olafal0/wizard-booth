@@ -7,6 +7,7 @@
 @use 'variables';
 @use 'grid';
 @use 'dnd';
+@use 'tags';
 
 html {
   font-family: variables.$font-stack;

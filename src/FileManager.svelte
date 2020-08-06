@@ -21,7 +21,7 @@
   export function saveAs() {
     var options = {
       title: "Save file",
-      defaultPath: "wb.json",
+      defaultPath: "wizardbooth.json",
       buttonLabel: "Save",
       filters: [{ name: "json", extensions: ["json"] }]
     };
@@ -40,7 +40,6 @@
   export function load() {
     var options = {
       title: "Open file",
-      defaultPath: "wb.json",
       buttonLabel: "Open",
       filters: [{ name: "json", extensions: ["json"] }]
     };

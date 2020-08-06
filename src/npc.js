@@ -61,6 +61,12 @@ export default class NPC {
     };
   }
 
+  matchesTags(tags) {
+    // Returns true iff this NPC has every tag in the passed set
+    const npcTags = new Set(this.tags);
+    return tags.every((t) => npcTags.has(t));
+  }
+
   randomName() {
     let firstName = this.markov.generate();
     let lastName = this.markov.generate();

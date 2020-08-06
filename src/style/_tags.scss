@@ -1,0 +1,45 @@
+@use 'variables';
+
+div.tag-edit {
+  font-family: variables.$font-stack;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid variables.$attn-neutral;
+  border-radius: 5px;
+  min-width: 100px;
+  min-height: 20px;
+
+  .existing-tag {
+    margin: 0px 5px;
+    padding: 3px;
+
+    .tag-delete {
+      cursor: pointer;
+      vertical-align: top;
+    }
+  }
+
+  .new-tag-editor {
+    min-width: 50px;
+    padding: 3px;
+  }
+}
+
+div.tag-filter {
+  position: relative;
+  display: inline-block;
+  min-width: 200px;
+  margin: 10px;
+
+  .tag-list {
+    min-width: 180px;
+    background-color: variables.$background-light;
+    color: variables.$text-dark;
+    position: absolute;
+    display: block;
+    border-left: 1px solid black;
+    padding: 10px;
+  }
+}
