@@ -13,6 +13,14 @@
     dispatch("delete", npc);
   }
 
+  function dragstart(event) {
+    dispatch("dragstart", npc);
+  }
+
+  function drop(event) {
+    dispatch("drop", npc);
+  }
+
   // Create a proxy object for avoiding all the pitfalls of classes, bindings,
   // and Svelte reactivity
   // Any random() method will call the relevant method on npc and assign it
@@ -35,7 +43,11 @@
   class="card"
   on:click={() => {
     expanded = true;
-  }}>
+  }}
+  draggable="true"
+  on:dragstart={dragstart}
+  on:dragover|preventDefault={() => {}}
+  on:drop={drop}>
   {#if expanded}
     <div class="left small" on:click|stopPropagation={deleteCharacter}>
       Delete
@@ -61,6 +73,7 @@
         on:click={npcProxy.randomAppearance}>
         refresh
       </button>
+      Appearance:
       <Editable bind:content={npc.appearance} />
     </div>
     <div>
@@ -69,6 +82,7 @@
         on:click={npcProxy.randomAbilities}>
         refresh
       </button>
+      Abilities:
       <Editable bind:content={npc.lowAbility} />
       but
       <Editable bind:content={npc.highAbility} />
@@ -79,6 +93,7 @@
         on:click={npcProxy.randomTalent}>
         refresh
       </button>
+      Talent:
       <Editable bind:content={npc.talent} />
     </div>
     <div>
@@ -87,6 +102,7 @@
         on:click={npcProxy.randomMannerism}>
         refresh
       </button>
+      Mannerism:
       <Editable bind:content={npc.mannerism} />
     </div>
     <div>
@@ -95,6 +111,7 @@
         on:click={npcProxy.randomInteractionStyle}>
         refresh
       </button>
+      Interaction style:
       <Editable bind:content={npc.interactionStyle} />
     </div>
     <div>
@@ -103,6 +120,7 @@
         on:click={npcProxy.randomIdeal}>
         refresh
       </button>
+      Ideal:
       <Editable bind:content={npc.ideal} />
     </div>
     <div>
@@ -111,6 +129,7 @@
         on:click={npcProxy.randomBond}>
         refresh
       </button>
+      Bond:
       <Editable bind:content={npc.bond} />
     </div>
     <div>
@@ -119,6 +138,7 @@
         on:click={npcProxy.randomFlaw}>
         refresh
       </button>
+      Flaw:
       <Editable bind:content={npc.flaw} />
     </div>
     <div>

@@ -9,6 +9,8 @@
   let allTags = new Set();
   let selectedTags = new Set();
 
+  let draggedNPC;
+
   function createNew() {
     characters = [new NPC(), ...characters];
   }
@@ -21,6 +23,26 @@
   function tagChange(event) {
     // Trigger reactive assignment when tag values change in any character
     allTags = allTags;
+  }
+
+  function dragstart(event) {
+    draggedNPC = event.detail;
+  }
+
+  function drop(event) {
+    if (!draggedNPC) {
+      console.warn("No dragged NPC");
+      return;
+    }
+    const droppedNPC = event.detail;
+    // Get the initial index that we dropped on
+    const droppedIndex = characters.indexOf(droppedNPC);
+    // Remove dropped npc from characters list
+    characters = characters.filter(c => c !== draggedNPC);
+    // Add the NPC to the slot that we dropped on
+    characters.splice(droppedIndex, 0, draggedNPC);
+    // Self-assignment for reactivity purposes
+    characters = characters;
   }
 
   $: {
@@ -46,7 +68,9 @@
         {npc}
         on:delete={deleteNPC}
         on:newTag={tagChange}
-        on:removeTag={tagChange} />
+        on:removeTag={tagChange}
+        on:dragstart={dragstart}
+        on:drop={drop} />
     {/if}
   {/each}
 </div>
