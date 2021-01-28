@@ -2,8 +2,9 @@
   import Character from "./Character";
   import TagFilter from "./TagFilter";
   import NPC from "./npc";
-  import { onMount } from "svelte";
-  import { remote } from "electron";
+  import { onMount, createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   export let characters = [];
   let allTags = new Set();
@@ -53,12 +54,17 @@
       });
     });
   }
+
+  function save() {
+    dispatch("save");
+  }
 </script>
 
 <nav>
   <h1>Wizard Booth</h1>
   <TagFilter bind:allTags bind:selectedTags />
   <button class="borderless" on:click={createNew}>New Character</button>
+  <button class="borderless" on:click={save}>Save</button>
 </nav>
 
 <div class="flex-container">

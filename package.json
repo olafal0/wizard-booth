@@ -1,20 +1,10 @@
 {
   "name": "wizard-booth",
   "productName": "wizard-booth",
-  "version": "0.1.0",
-  "description": "My Electron application description",
-  "main": "dist/index.js",
+  "version": "0.3.0",
   "scripts": {
-    "parcel:watch": "parcel watch --target electron --public-url ./ --no-hmr src/*",
-    "parcel:build": "parcel build --target electron --public-url ./ src/*",
-    "electron:start": "electron-forge start --app-path ./dist",
-    "start": "concurrently -k \"npm:parcel:watch\" \"npm:electron:start\"",
-    "package": "electron-forge package ./dist",
-    "make:win": "electron-forge make --platform win32 --targets @electron-forge/maker-zip ./dist",
-    "make:linux": "electron-forge make --platform linux --targets @electron-forge/maker-zip ./dist",
-    "make": "npm run parcel:build && npm run make:linux && npm run make:win",
-    "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "start": "npx parcel ./src/index.html",
+    "build": "npx parcel build ./src/index.html"
   },
   "keywords": [],
   "author": {
@@ -22,29 +12,13 @@
     "email": "lawrence.danielt@gmail.com"
   },
   "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-zip",
-          "config": {}
-        }
-      ]
-    }
-  },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0",
-    "svelte": "^3.24.1",
+    "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.4",
-    "parcel-plugin-svelte": "^4.0.6",
-    "sass": "^1.26.10"
+    "parcel-plugin-svelte": "^4.0.7",
+    "svelte": "^3.32.0"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.52",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.52",
-    "@electron-forge/maker-zip": "^6.0.0-beta.52",
-    "concurrently": "^5.2.0",
-    "electron": "9.1.2"
+    "sass": "^1.32.5"
   }
 }
