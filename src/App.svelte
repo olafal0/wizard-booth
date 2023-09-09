@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
   import NPC from "./npc";
-  import CharacterList from "./CharacterList";
-  import FileManager from "./FileManager";
+  import CharacterList from "./CharacterList.svelte";
+  import FileManager from "./FileManager.svelte";
   import { onMount } from "svelte";
 
-  let characters = [];
-  let fileManager;
+  let characters: NPC[] = [];
+  let fileManager: FileManager;
 
   function saveGame() {
     fileManager.save();

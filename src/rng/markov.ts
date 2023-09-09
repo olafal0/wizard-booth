@@ -3,22 +3,32 @@
 // written and released to the public domain by drow <drow@bin.sh>
 // http://creativecommons.org/publicdomain/zero/1.0/
 
-class MarkovChain {
-  constructor(sequences, splitBy = null) {
-    this.chain = {};
-    this.splitBy = splitBy;
+export class MarkovChain {
+  chain: {
+    length: {
+      [len: number]: number;
+    };
+    [from: string]: {
+      [to: string]: number;
+    };
+  };
+
+  constructor(sequences: string[]) {
+    this.chain = {
+      length: {},
+    };
 
     for (let j = 0; j < sequences.length; j++) {
-      var sequence = this.tokenize(sequences[j]);
+      var sequence = sequences[j];
 
       var substr = sequence.slice(1);
       var c = sequence.slice(0, 1);
       var lastC = c;
 
       // Add the first character to the "initial" special token
-      this.increment('initial', c);
+      this.increment("initial", c);
       // Add the length to the "length" special token
-      this.increment('length', sequence.length);
+      this.incrementLength(sequence.length);
 
       while (substr.length > 0) {
         var c = substr.slice(0, 1);
@@ -32,17 +42,7 @@ class MarkovChain {
     this.normalize();
   }
 
-  tokenize(sequence) {
-    // Split a sequence into a list of tokens.
-    if (this.splitBy !== null) {
-      // If this.splitBy is set, tokens will be substrings split using splitBy
-      return sequence.split(this.splitBy);
-    }
-    // If not, tokens will be individual characters
-    return sequence;
-  }
-
-  increment(from, to) {
+  increment(from: string, to: string) {
     // Increment the probability of "from" leading to "to".
     if (this.chain[from]) {
       if (this.chain[from][to]) {
@@ -53,6 +53,14 @@ class MarkovChain {
     } else {
       this.chain[from] = {};
       this.chain[from][to] = 1;
+    }
+  }
+
+  incrementLength(len: number) {
+    if (this.chain.length[len]) {
+      this.chain.length[len]++;
+    } else {
+      this.chain.length[len] = 1;
     }
   }
 
@@ -69,7 +77,7 @@ class MarkovChain {
     });
   }
 
-  selectLink(from) {
+  selectLink(from: string): string {
     let idx = Math.random();
 
     let t = 0;
@@ -79,13 +87,26 @@ class MarkovChain {
         return token;
       }
     }
-    return '-';
+    return "-";
+  }
+
+  selectLength(): number {
+    let idx = Math.random();
+
+    let t = 0;
+    for (let len in this.chain.length) {
+      t += this.chain.length[len];
+      if (idx < t) {
+        return parseInt(len);
+      }
+    }
+    return 0;
   }
 
   generate() {
     // Pick a length and an initial character
-    let length = this.selectLink('length');
-    let c = this.selectLink('initial');
+    let length = this.selectLength();
+    let c = this.selectLink("initial");
     let lastC = c;
     let tokens = [c];
 
@@ -95,11 +116,6 @@ class MarkovChain {
       lastC = c;
     }
 
-    if (this.splitBy !== null) {
-      return tokens.join(this.splitBy);
-    }
-    return tokens.join('');
+    return tokens.join("");
   }
 }
-
-module.exports = MarkovChain;

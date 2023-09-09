@@ -1,23 +1,28 @@
-<script>
-  import Editable from "./Editable";
-  import TagEditor from "./TagEditor";
+<script lang="ts">
+  import Editable from "./Editable.svelte";
+  import TagEditor from "./TagEditor.svelte";
   import { createEventDispatcher } from "svelte";
+  import type NPC from "./npc.ts";
 
-  const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher<{
+    delete: NPC;
+    dragstart: NPC;
+    drop: NPC;
+  }>();
 
-  export let npc;
-
+  export let npc: NPC;
   export let expanded = false;
+  let cardDraggable = true;
 
   function deleteCharacter() {
     dispatch("delete", npc);
   }
 
-  function dragstart(event) {
+  function dragstart(event: DragEvent) {
     dispatch("dragstart", npc);
   }
 
-  function drop(event) {
+  function drop(event: DragEvent) {
     dispatch("drop", npc);
   }
 
@@ -27,27 +32,51 @@
   // to itself, which will trigger Svelte's reactive updates, and avoid needing
   // to do any bind() trickery.
   const npcProxy = new Proxy(
-    {},
     {
-      get: function(target, prop) {
+      randomName: () => {},
+      randomAppearance: () => {},
+      randomAbilities: () => {},
+      randomTalent: () => {},
+      randomMannerism: () => {},
+      randomInteractionStyle: () => {},
+      randomIdeal: () => {},
+      randomBond: () => {},
+      randomFlaw: () => {},
+    },
+    {
+      get: function (
+        target,
+        prop:
+          | "randomName"
+          | "randomAppearance"
+          | "randomAbilities"
+          | "randomTalent"
+          | "randomMannerism"
+          | "randomInteractionStyle"
+          | "randomIdeal"
+          | "randomBond"
+          | "randomFlaw"
+      ) {
         return () => {
           npc[prop]();
           npc = npc;
         };
-      }
+      },
     }
   );
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 <div
   class="card"
   on:click={() => {
     expanded = true;
   }}
-  draggable="true"
+  draggable={cardDraggable}
   on:dragstart={dragstart}
   on:dragover|preventDefault={() => {}}
-  on:drop={drop}>
+  on:drop={drop}
+>
   {#if expanded}
     <div class="left small" on:click|stopPropagation={deleteCharacter}>
       Delete
@@ -56,13 +85,15 @@
       class="right small"
       on:click|stopPropagation={() => {
         expanded = false;
-      }}>
+      }}
+    >
       Collapse
     </div>
     <h3>
       <button
         class="material-icons borderless small"
-        on:click={npcProxy.randomName}>
+        on:click={npcProxy.randomName}
+      >
         refresh
       </button>
       <Editable bind:content={npc.name} />
@@ -70,7 +101,8 @@
     <div>
       <button
         class="material-icons borderless small"
-        on:click={npcProxy.randomAppearance}>
+        on:click={npcProxy.randomAppearance}
+      >
         refresh
       </button>
       Appearance:
@@ -79,7 +111,8 @@
     <div>
       <button
         class="material-icons borderless small"
-        on:click={npcProxy.randomAbilities}>
+        on:click={npcProxy.randomAbilities}
+      >
         refresh
       </button>
       Abilities:
@@ -90,7 +123,8 @@
     <div>
       <button
         class="material-icons borderless small"
-        on:click={npcProxy.randomTalent}>
+        on:click={npcProxy.randomTalent}
+      >
         refresh
       </button>
       Talent:
@@ -99,7 +133,8 @@
     <div>
       <button
         class="material-icons borderless small"
-        on:click={npcProxy.randomMannerism}>
+        on:click={npcProxy.randomMannerism}
+      >
         refresh
       </button>
       Mannerism:
@@ -108,7 +143,8 @@
     <div>
       <button
         class="material-icons borderless small"
-        on:click={npcProxy.randomInteractionStyle}>
+        on:click={npcProxy.randomInteractionStyle}
+      >
         refresh
       </button>
       Interaction style:
@@ -117,7 +153,8 @@
     <div>
       <button
         class="material-icons borderless small"
-        on:click={npcProxy.randomIdeal}>
+        on:click={npcProxy.randomIdeal}
+      >
         refresh
       </button>
       Ideal:
@@ -126,7 +163,8 @@
     <div>
       <button
         class="material-icons borderless small"
-        on:click={npcProxy.randomBond}>
+        on:click={npcProxy.randomBond}
+      >
         refresh
       </button>
       Bond:
@@ -135,7 +173,8 @@
     <div>
       <button
         class="material-icons borderless small"
-        on:click={npcProxy.randomFlaw}>
+        on:click={npcProxy.randomFlaw}
+      >
         refresh
       </button>
       Flaw:
@@ -160,7 +199,17 @@
     <div>
       Notes:
       <form>
-        <textarea rows="10" cols="40" bind:value={npc.notes} />
+        <textarea
+          on:focus={() => {
+            cardDraggable = false;
+          }}
+          on:focusout={() => {
+            cardDraggable = true;
+          }}
+          rows="10"
+          cols="40"
+          bind:value={npc.notes}
+        />
       </form>
     </div>
   {:else}

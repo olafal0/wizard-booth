@@ -1,36 +1,36 @@
-<script>
-  import Character from "./Character";
-  import TagFilter from "./TagFilter";
+<script lang="ts">
+  import Character from "./Character.svelte";
+  import TagFilter from "./TagFilter.svelte";
   import NPC from "./npc";
   import { onMount, createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
 
-  export let characters = [];
-  let allTags = new Set();
-  let selectedTags = new Set();
+  export let characters: NPC[] = [];
+  let allTags: Set<string> = new Set();
+  let selectedTags: Set<string> = new Set();
 
-  let draggedNPC;
+  let draggedNPC: NPC;
 
   function createNew() {
     characters = [new NPC(), ...characters];
   }
 
-  function deleteNPC(event) {
+  function deleteNPC(event: CustomEvent<NPC>) {
     const npc = event.detail;
-    characters = characters.filter(c => c !== npc);
+    characters = characters.filter((c) => c !== npc);
   }
 
-  function tagChange(event) {
+  function tagChange() {
     // Trigger reactive assignment when tag values change in any character
     allTags = allTags;
   }
 
-  function dragstart(event) {
+  function dragstart(event: CustomEvent<NPC>) {
     draggedNPC = event.detail;
   }
 
-  function drop(event) {
+  function drop(event: CustomEvent<NPC>) {
     if (!draggedNPC) {
       console.warn("No dragged NPC");
       return;
@@ -39,7 +39,7 @@
     // Get the initial index that we dropped on
     const droppedIndex = characters.indexOf(droppedNPC);
     // Remove dropped npc from characters list
-    characters = characters.filter(c => c !== draggedNPC);
+    characters = characters.filter((c) => c !== draggedNPC);
     // Add the NPC to the slot that we dropped on
     characters.splice(droppedIndex, 0, draggedNPC);
     // Self-assignment for reactivity purposes
@@ -48,8 +48,8 @@
 
   $: {
     allTags = new Set();
-    characters.forEach(npc => {
-      npc.tags.forEach(tag => {
+    characters.forEach((npc) => {
+      npc.tags.forEach((tag) => {
         allTags.add(tag);
       });
     });
@@ -76,7 +76,8 @@
         on:newTag={tagChange}
         on:removeTag={tagChange}
         on:dragstart={dragstart}
-        on:drop={drop} />
+        on:drop={drop}
+      />
     {/if}
   {/each}
 </div>

@@ -1,9 +1,7 @@
-<script>
+<script lang="ts">
   import NPC from "./npc";
-  import CharacterList from "./CharacterList";
-  import { onMount } from "svelte";
 
-  export let characters;
+  export let characters: NPC[];
 
   export function save() {
     const gameName = "default-game"; // localStorage.getItem("last-saved");
@@ -16,7 +14,7 @@
     if (!data) {
       return;
     }
-    const npcs = JSON.parse(data);
-    characters = npcs.map(npc => NPC.fromJSON(npc));
+    const npcs: NPC[] = JSON.parse(data);
+    characters = npcs.map((npc) => NPC.fromJSON(npc));
   }
 </script>

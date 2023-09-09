@@ -1,22 +1,62 @@
-import * as characteristics from './rng/characteristics';
-import * as nameSets from './rng/nameSets';
-import MarkovChain from './rng/markov';
+import * as characteristics from "./rng/characteristics";
+import * as nameSets from "./rng/nameSets";
+import { MarkovChain } from "./rng/markov";
 
 const defaultOptions = {
-  nameGenerationSet: 'fantasy',
+  nameGenerationSet: "fantasy",
   tags: [],
 };
 
-function chooseOne(arr) {
+function chooseOne<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
 export default class NPC {
+  options: {
+    nameGenerationSet: string;
+    tags: string[];
+  };
+  tags: string[];
+  markov: MarkovChain;
+  notes: string;
+  name: string;
+  appearance: string;
+  highAbility: string;
+  lowAbility: string;
+  talent: string;
+  mannerism: string;
+  interactionStyle: string;
+  ideal: string;
+  bond: string;
+  flaw: string;
+  stats: {
+    [name: string]: number;
+  };
+
   constructor(options = {}) {
     this.options = { ...defaultOptions, ...options };
-    this.markov = new MarkovChain(nameSets[this.options.nameGenerationSet]);
+    this.markov = new MarkovChain(nameSets.fantasy.concat(nameSets.romanian));
     this.tags = this.options.tags;
-    this.notes = '';
+    this.notes = "";
+    // Set zero values for all characteristics to appease typescript
+    this.name = "";
+    this.appearance = "";
+    this.highAbility = "";
+    this.lowAbility = "";
+    this.talent = "";
+    this.mannerism = "";
+    this.interactionStyle = "";
+    this.ideal = "";
+    this.bond = "";
+    this.flaw = "";
+    this.stats = {
+      str: 0,
+      dex: 0,
+      con: 0,
+      int: 0,
+      wis: 0,
+      chr: 0,
+    };
     // Generate random characteristics to start with
     this.randomName();
     this.randomAppearance();
@@ -30,7 +70,7 @@ export default class NPC {
     this.randomStats();
   }
 
-  static fromJSON(data) {
+  static fromJSON(data: { [key: string]: any }) {
     const npc = new NPC();
     npc.name = data.name;
     npc.appearance = data.appearance;
@@ -64,7 +104,7 @@ export default class NPC {
     };
   }
 
-  matchesTags(tags) {
+  matchesTags(tags: string[]) {
     // Returns true iff this NPC has every tag in the passed set
     const npcTags = new Set(this.tags);
     return tags.every((t) => npcTags.has(t));
