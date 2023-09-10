@@ -11,6 +11,16 @@
 
 html {
   font-family: variables.$font-stack;
+
+  .titleLoader {
+    font-family: variables.$title-font;
+  }
+  .fontLoader {
+    font-family: variables.$font-stack;
+  }
+  .iconsLoader {
+    font-family: 'Material Icons';
+  }
 }
 
 body {
