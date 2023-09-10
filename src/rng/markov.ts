@@ -95,18 +95,12 @@ export class MarkovChain {
     let idx = Math.random();
 
     let t = 0;
-    // Create token set using the links of the total "from" (can be more than 1
-    // character) + the last character of "from"
-    let tokens = {
-      ...this.chain[from],
-    };
-    if (from.length > 1) {
+    // Create token set using the links of the total "from"
+    let tokens = this.chain[from];
+    // If no tokens are found, fall back to single-character prediction
+    if (!tokens && from.length > 1) {
       let last = from.slice(-1);
-      tokens = {
-        ...tokens,
-        ...this.chain[last],
-      };
-      tokens = this.normalizeBranch(tokens);
+      tokens = this.chain[last];
     }
     for (let token in tokens) {
       t += tokens[token];
