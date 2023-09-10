@@ -2,20 +2,26 @@ import * as characteristics from "./rng/characteristics";
 import * as nameSets from "./rng/nameSets";
 import { MarkovChain } from "./rng/markov";
 
-const defaultOptions = {
-  nameGenerationSet: "fantasy",
+interface NPCOptions {
+  nameGenerationSets?: ("fantasy" | "romanian")[];
+  tags?: string[];
+}
+
+const defaultOptions: NPCOptions = {
+  nameGenerationSets: ["fantasy", "romanian"],
   tags: [],
 };
+
+const defaultMarkov = new MarkovChain(
+  nameSets.fantasy.concat(nameSets.romanian)
+);
 
 function chooseOne<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
 export default class NPC {
-  options: {
-    nameGenerationSet: string;
-    tags: string[];
-  };
+  options: NPCOptions;
   tags: string[];
   markov: MarkovChain;
   notes: string;
@@ -33,10 +39,17 @@ export default class NPC {
     [name: string]: number;
   };
 
-  constructor(options = {}) {
+  constructor(options: NPCOptions = {}) {
     this.options = { ...defaultOptions, ...options };
-    this.markov = new MarkovChain(nameSets.fantasy.concat(nameSets.romanian));
-    this.tags = this.options.tags;
+    this.markov = defaultMarkov;
+    if (options.nameGenerationSets) {
+      let sequences: string[] = [];
+      for (let set of options.nameGenerationSets) {
+        sequences = sequences.concat(nameSets[set]);
+      }
+      this.markov = new MarkovChain(sequences);
+    }
+    this.tags = this.options.tags || [];
     this.notes = "";
     // Set zero values for all characteristics to appease typescript
     this.name = "";

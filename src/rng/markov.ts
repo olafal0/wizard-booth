@@ -5,37 +5,47 @@
 
 export class MarkovChain {
   chain: {
-    length: {
-      [len: number]: number;
-    };
     [from: string]: {
       [to: string]: number;
     };
   };
+  lengths: {
+    [len: number]: number;
+  };
 
   constructor(sequences: string[]) {
-    this.chain = {
-      length: {},
-    };
+    this.chain = {};
+    this.lengths = {};
 
     for (let j = 0; j < sequences.length; j++) {
-      var sequence = sequences[j];
+      let sequence = sequences[j].toLocaleLowerCase();
 
-      var substr = sequence.slice(1);
-      var c = sequence.slice(0, 1);
-      var lastC = c;
+      if (sequence.length < 2) {
+        console.error("Sequence too short: " + sequence);
+        continue;
+      }
+      let current = sequence.slice(0, 1);
+      let remaining = sequence.slice(1);
 
       // Add the first character to the "initial" special token
-      this.increment("initial", c);
+      this.increment("initial", current);
       // Add the length to the "length" special token
       this.incrementLength(sequence.length);
 
-      while (substr.length > 0) {
-        var c = substr.slice(0, 1);
-        this.increment(lastC, c);
+      let previous = "";
+      while (remaining.length > 1) {
+        let next = remaining.slice(1, 2);
+        previous = current;
+        current = remaining.slice(0, 1);
+        this.increment(current, next);
+        this.increment(previous + current, next);
 
-        substr = substr.slice(1);
-        lastC = c;
+        remaining = remaining.slice(1);
+      }
+      if (remaining.length > 0) {
+        let next = remaining.slice(0, 1);
+        this.increment(current, next);
+        this.increment(previous + current, next);
       }
     }
 
@@ -57,10 +67,10 @@ export class MarkovChain {
   }
 
   incrementLength(len: number) {
-    if (this.chain.length[len]) {
-      this.chain.length[len]++;
+    if (this.lengths[len]) {
+      this.lengths[len]++;
     } else {
-      this.chain.length[len] = 1;
+      this.lengths[len] = 1;
     }
   }
 
@@ -68,21 +78,38 @@ export class MarkovChain {
     // Normalize all link probabilities so that their total probability ~= 1.0.
 
     Object.keys(this.chain).forEach((key) => {
-      let sum = Object.values(this.chain[key]).reduce(
-        (prev, curr) => prev + curr
-      );
-      Object.keys(this.chain[key]).forEach((token) => {
-        this.chain[key][token] = this.chain[key][token] / sum;
-      });
+      this.chain[key] = this.normalizeBranch(this.chain[key]);
     });
+    this.lengths = this.normalizeBranch(this.lengths);
+  }
+
+  normalizeBranch(tokens: { [to: string]: number }) {
+    let sum = Object.values(tokens).reduce((prev, curr) => prev + curr);
+    Object.keys(tokens).forEach((token) => {
+      tokens[token] = tokens[token] / sum;
+    });
+    return tokens;
   }
 
   selectLink(from: string): string {
     let idx = Math.random();
 
     let t = 0;
-    for (let token in this.chain[from]) {
-      t += this.chain[from][token];
+    // Create token set using the links of the total "from" (can be more than 1
+    // character) + the last character of "from"
+    let tokens = {
+      ...this.chain[from],
+    };
+    if (from.length > 1) {
+      let last = from.slice(-1);
+      tokens = {
+        ...tokens,
+        ...this.chain[last],
+      };
+      tokens = this.normalizeBranch(tokens);
+    }
+    for (let token in tokens) {
+      t += tokens[token];
       if (idx < t) {
         return token;
       }
@@ -94,8 +121,8 @@ export class MarkovChain {
     let idx = Math.random();
 
     let t = 0;
-    for (let len in this.chain.length) {
-      t += this.chain.length[len];
+    for (let len in this.lengths) {
+      t += this.lengths[len];
       if (idx < t) {
         return parseInt(len);
       }
@@ -106,14 +133,14 @@ export class MarkovChain {
   generate() {
     // Pick a length and an initial character
     let length = this.selectLength();
-    let c = this.selectLink("initial");
-    let lastC = c;
-    let tokens = [c];
+    let current = this.selectLink("initial");
+    let previous = "";
+    let tokens = [current];
 
     for (let i = 1; i < length; i++) {
-      c = this.selectLink(lastC);
-      tokens.push(c);
-      lastC = c;
+      current = this.selectLink(previous + current);
+      tokens.push(current);
+      previous = current;
     }
 
     return tokens.join("");
